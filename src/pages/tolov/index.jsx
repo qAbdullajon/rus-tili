@@ -8,7 +8,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [fileList, setFileList] = useState([]);
 
-  // // Faylni o'zgartirishda boshqarish
+  // Faylni o'zgartirishda boshqarish
   const handleFileChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
@@ -27,7 +27,7 @@ const Index = () => {
       });
 
       const result = await response.json();
-      if (result.result === "success") {
+      if (result.status === 200) {
         message.success("Ma'lumot muvaffaqiyatli yuborildi!");
       } else {
         message.error("Xato yuz berdi, qayta urinib ko'ring!");
@@ -40,12 +40,18 @@ const Index = () => {
 
   // Taymerni boshqarish
   useEffect(() => {
+    let isMounted = true; // Flag qo'shing
     if (time > 0) {
       const timerId = setInterval(() => {
-        setTime((prevTime) => prevTime - 1);
+        if (isMounted) {
+          setTime((prevTime) => prevTime - 1);
+        }
       }, 1000);
-      return () => clearInterval(timerId);
-    } else {
+      return () => {
+        isMounted = false; // Unmount bo'lganda flagni yangilang
+        clearInterval(timerId);
+      };
+    } else if (isMounted) {
       message.warning("Vaqt tugadi! Iltimos, qayta urinib ko‘ring.");
       navigate("/timeout"); // Zarurat bo'lsa, kerakli sahifaga yo'naltirish
     }
@@ -92,15 +98,7 @@ const Index = () => {
             </div>
 
             <Form autoComplete="off" layout="vertical" className="pt-4" onFinish={handleSubmit}>
-              <Form.Item
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: "Siz ism yo'lagini to'ldirmadingiz!",
-                  },
-                ]}
-              >
+              <Form.Item name="name" rules={[{ required: true, message: "Siz ism yo'lagini to'ldirmadingiz!" }]}>
                 <Input
                   placeholder="Ismingiz"
                   size="large"
@@ -112,15 +110,7 @@ const Index = () => {
                   }}
                 />
               </Form.Item>
-              <Form.Item
-                name="phone"
-                rules={[
-                  {
-                    required: true,
-                    message: "Siz telefon raqamingizni kiritmadingiz!",
-                  },
-                ]}
-              >
+              <Form.Item name="phone" rules={[{ required: true, message: "Siz telefon raqamingizni kiritmadingiz!" }]}>
                 <Input
                   placeholder="+998 99 999 99 99"
                   size="large"
@@ -133,15 +123,7 @@ const Index = () => {
                 />
               </Form.Item>
 
-              <Form.Item
-                name="image"
-                rules={[
-                  {
-                    required: true,
-                    message: "Siz chek rasmini kiritmadingiz!",
-                  },
-                ]}
-              >
+              <Form.Item name="image" rules={[{ required: true, message: "Siz chek rasmini kiritmadingiz!" }]}>
                 <Upload
                   fileList={fileList}
                   onChange={handleFileChange}
