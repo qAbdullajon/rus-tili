@@ -73,7 +73,7 @@ const Index = () => {
     formData.append("Phone", values.Phone);
     formData.append("Image", fileList[0]?.originFileObj);
 
-    fetch("https://script.google.com/macros/s/AKfycbxV78-VzihDICFRzQK6d_GQGxojbAvQUEPHEo-BhKeUatvUWi4CrfaT8AlSPaQWaIHf/exec", {
+    fetch("https://script.google.com/macros/s/AKfycby7PkQZGCiT2YDtoFzWc2sDfM1RV-Dgnt4BF-pD62MmPWWnewxgZoooS1ignNYkQ4ht/exec", {
       method: "POST",
       body: formData,
     })
