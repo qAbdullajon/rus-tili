@@ -16,8 +16,8 @@ const Index = () => {
   // Formani yuborish
   const handleSubmit = async (values) => {
     const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("phone", values.phone);
+    formData.append("Name", values.name);
+    formData.append("Phone", values.phone);
     // formData.append("file", fileList[0]?.originFileObj);
 
     try {
