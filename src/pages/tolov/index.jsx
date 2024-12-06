@@ -65,16 +65,25 @@ const Index = () => {
 
   const convertToBase64 = (file) => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(",")[1]); // Base64 qismini olish
-      reader.onerror = (error) => reject(error);
+      if (file && file.originFileObj) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result.split(",")[1]); // Base64 qismini olish
+        reader.onerror = (error) => reject(error);
+      } else {
+        reject(new Error("Fayl noto‘g‘ri yoki mavjud emas."));
+      }
     });
   };
 
   const handleSubmit = async (values) => {
     try {
-      const base64Image = await convertToBase64(fileList[0]?.originFileObj);
+      if (!fileList.length) {
+        message.error("Iltimos, rasmni yuklang!");
+        return;
+      }
+
+      const base64Image = await convertToBase64(fileList[0]);
 
       const formData = {
         FullName: values.FullName,
@@ -82,7 +91,7 @@ const Index = () => {
         Image: base64Image, // Base64 formatdagi rasm
       };
 
-      const response = await fetch("YOUR_SCRIPT_URL", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbw7uk6kv5rVZjW08ITfo-lpCplLg1RMJ_gAXaxPqOtOh9rxblYruXGz8zbIh_HlmdkE/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
