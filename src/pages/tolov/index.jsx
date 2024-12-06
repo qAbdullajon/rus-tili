@@ -14,21 +14,28 @@ const Index = () => {
   };
 
   // Formani yuborish
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    console.log();
+  const handleSubmit = async (values) => {
     const formData = new FormData();
-    formData.append("Name", event.name);
-    formData.append("Phone", event.phone);
-    formData.append("image", fileList[0]); // Foydalanuvchi yuklagan tasvir
+    formData.append("Name", values.name); // Form'dan kelgan qiymatlar
+    formData.append("Phone", values.phone);
+    formData.append("image", fileList[0]?.originFileObj); // Faylni `originFileObj` orqali olish
 
-    const response = await fetch("https://script.google.com/macros/s/AKfycby1fDZvYVg6x8RBVdfhrBW-uyY0Ofq_tKmmqFi5RZ813GtAjdiYYuQ0inkq2LKzI9sg/exec", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxryseIWZtSH6wOpPMUFpJ1aiWyl0a2UyMphERTn-rW3x5TyhKcJY5viK_DTw5BeyXm/exec", {
+        method: "POST",
+        body: formData,
+      });
 
-    const result = await response.json();
-    console.log(result);
+      const result = await response.json();
+      if (result.result === "success") {
+        message.success("Ma'lumot muvaffaqiyatli yuborildi!");
+      } else {
+        message.error("Xato yuz berdi, qayta urinib ko'ring!");
+      }
+    } catch (error) {
+      message.error("Server bilan aloqa muvaffaqiyatsiz!");
+      console.error(error);
+    }
   };
 
   // Taymerni boshqarish
