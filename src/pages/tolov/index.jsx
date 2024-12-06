@@ -21,7 +21,7 @@ const Index = () => {
     formData.append("image", fileList[0]?.originFileObj); // Faylni `originFileObj` orqali olish
 
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxryseIWZtSH6wOpPMUFpJ1aiWyl0a2UyMphERTn-rW3x5TyhKcJY5viK_DTw5BeyXm/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbz-uYaJqWKGRCdzIA4Yg8F8fJKKXtzGkasVWD5oCkMonW_hmEKTQdkVkCMfD0LJgkBX/exec", {
         method: "POST",
         body: formData,
       });
