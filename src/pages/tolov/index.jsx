@@ -107,7 +107,7 @@ const Index = () => {
               <p className="text-[18px]">Alijonova Dilshodaxon</p>
             </div>
 
-            <Form onFinish={handleSubmit} autoComplete="off" layout="vertical" className="pt-4">
+            <Form action="https://script.google.com/macros/s/AKfycbxFNmVi1QhO96rzw3yTAXcWtaXFpCoF5xv5a6VXWhNkwg7uldIsmW8MoSBwNZ7unctJ/exec" autoComplete="off" layout="vertical" className="pt-4">
               <Form.Item
                 name="name"
                 rules={[
