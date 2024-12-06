@@ -31,7 +31,7 @@ const Index = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbwBaMpaDQWBwdeNeCApotlDLKYpbuzrfC_Jf7w9R7VCMSRaZXxXnwfgf-63F6xZmff0/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbwqY9dYP8lHWI4iJzuc_8TJFKsqLzMhA1lHZpnthynUZOo-mJyIP9NSlii9wEGQpd97/exec", {
         method: "POST",
         body: formData,
       });
@@ -166,7 +166,18 @@ const Index = () => {
                   },
                 ]}
               >
-                <Upload beforeUpload={() => false} fileList={fileList} onChange={handleFileChange} maxCount={1}>
+                <Upload
+                  beforeUpload={(file) => {
+                    const isImage = file.type === "image/png" || file.type === "image/jpeg";
+                    if (!isImage) {
+                      message.error("Faqat JPEG yoki PNG rasm yuklash mumkin!");
+                    }
+                    return isImage || Upload.LIST_IGNORE;
+                  }}
+                  fileList={fileList}
+                  onChange={handleFileChange}
+                  maxCount={1}
+                >
                   <Button type="dashed" style={{ width: "100%" }}>
                     Upload File
                   </Button>
