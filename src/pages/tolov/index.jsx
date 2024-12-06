@@ -23,10 +23,10 @@ const Index = () => {
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("phone", values.phone);
-    formData.append("file", fileList[0].originFileObj);
+    // formData.append("file", fileList[0].originFileObj);
 
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbzaPjxliB1ZBW7mDeY0RgvrRWqEan4ITbooBegxR7t3hJPurefsiWSHP90Lh-YlPCuG/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxFNmVi1QhO96rzw3yTAXcWtaXFpCoF5xv5a6VXWhNkwg7uldIsmW8MoSBwNZ7unctJ/exec", {
         method: "POST",
         body: formData,
       });
@@ -148,7 +148,7 @@ const Index = () => {
                   }}
                 />
               </Form.Item>
-              <Form.Item
+              {/* <Form.Item
                 name="image"
                 rules={[
                   {
@@ -167,7 +167,7 @@ const Index = () => {
                     Fayl yuklash
                   </Button>
                 </Upload>
-              </Form.Item>
+              </Form.Item> */}
 
               <Button htmlType="submit" className="w-full h-[50px]" type="primary" size="large">
                 Davom etish
