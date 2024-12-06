@@ -69,7 +69,7 @@ const Index = () => {
   // Formani yuborish
   const handleSubmit = (values) => {
     const formData = new FormData();
-    formData.append("FullName", values.fullName);
+    formData.append("FullName", values.FullName);
     formData.append("Phone", values.Phone);
     formData.append("Image", fileList[0]?.originFileObj);
 
@@ -126,7 +126,7 @@ const Index = () => {
 
             <Form onFinish={handleSubmit} autoComplete="off" layout="vertical" className="pt-4">
               <Form.Item
-                name="fullName"
+                name="FullName"
                 rules={[
                   {
                     required: true,
