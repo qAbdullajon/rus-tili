@@ -21,7 +21,7 @@ const Index = () => {
     // formData.append("file", fileList[0]?.originFileObj);
 
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycby0WOEetck_dMoh1Go16Mu51iSQ4I7Menovwuhq5hXKiPIU_b-WwP_mLNH0QJWLJz-o/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxdLglFcBrRtjUatd0QkCLZg00_t0HrHHr8utQm5xgpv8wDOD4PLW2AxBKXkuxRYXV6/exec", {
         method: "POST",
         body: formData,
       });
