@@ -69,11 +69,11 @@ const Index = () => {
   // Formani yuborish
   const handleSubmit = (values) => {
     const formData = new FormData();
-    formData.append("Name", values.Name);
+    formData.append("FullName", values.fullName);
     formData.append("Phone", values.Phone);
     formData.append("Image", fileList[0]?.originFileObj);
 
-    fetch("https://script.google.com/macros/s/AKfycbz2Yr-iTZtUFA5_sl5SmNSicacN5UWZ7DflykPvKT1iHqSkf_XLrcqWc4Lk8K45myrL/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbxV78-VzihDICFRzQK6d_GQGxojbAvQUEPHEo-BhKeUatvUWi4CrfaT8AlSPaQWaIHf/exec", {
       method: "POST",
       body: formData,
     })
@@ -124,9 +124,9 @@ const Index = () => {
               <p className="text-[18px]">Alijonova Dilshodaxon</p>
             </div>
 
-            <Form onFinish={handleSubmit} layout="vertical" className="pt-4">
+            <Form onFinish={handleSubmit} autoComplete="off" layout="vertical" className="pt-4">
               <Form.Item
-                name="Name"
+                name="fullName"
                 rules={[
                   {
                     required: true,
