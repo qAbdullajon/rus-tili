@@ -1,34 +1,34 @@
 import { CopyOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input, Upload, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [time, setTime] = useState(15 * 60); // 15 daqiqalik taymer
   const navigate = useNavigate();
-  // const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState([]);
 
   // // Faylni o'zgartirishda boshqarish
-  // const handleFileChange = ({ fileList: newFileList }) => {
-  //   setFileList(newFileList);
-  // };
+  const handleFileChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
 
   // Formani yuborish
   const handleSubmit = async (values) => {
     const formData = new FormData();
     formData.append("Name", values.name);
     formData.append("Phone", values.phone);
-    // formData.append("file", fileList[0]?.originFileObj);
+    formData.append("file", fileList[0]?.originFileObj);
 
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxdLglFcBrRtjUatd0QkCLZg00_t0HrHHr8utQm5xgpv8wDOD4PLW2AxBKXkuxRYXV6/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbxuQiIomDzW0R_dyQKjhyXnAHg3XuMdiu6KLqotWfvke3eEm9mfZZQ8NbstMIlw7_2I/exec", {
         method: "POST",
         body: formData,
       });
 
       if (response.ok) {
         message.success("Ma'lumot muvaffaqiyatli yuborildi!");
-        // setFileList([]); // Fayl ro'yxatini tozalash
+        setFileList([]); // Fayl ro'yxatini tozalash
       } else {
         message.error("Xatolik yuz berdi!");
       }
@@ -132,7 +132,7 @@ const Index = () => {
                 />
               </Form.Item>
 
-              {/* <Form.Item
+              <Form.Item
                 name="image"
                 rules={[
                   {
@@ -151,7 +151,7 @@ const Index = () => {
                     Fayl yuklash
                   </Button>
                 </Upload>
-              </Form.Item> */}
+              </Form.Item>
 
               <Button htmlType="submit" className="w-full h-[50px]" type="primary" size="large">
                 Davom etish
