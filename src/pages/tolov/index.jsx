@@ -7,24 +7,44 @@ const Index = () => {
   const [time, setTime] = useState(15 * 60); // 15 daqiqalik taymer
   const navigate = useNavigate();
   const [fileList, setFileList] = useState([]);
+  const [file, setFile] = useState(null);
 
-  // Fayl yuklash parametrlari
-  const props = {
-    onRemove: (file) => {
-      const index = fileList.findIndex((item) => item.uid === file.uid);
-      if (index !== -1) {
-        const newFileList = [...fileList];
-        newFileList.splice(index, 1);
-        setFileList(newFileList);
-      }
-    },
-    beforeUpload: (file) => {
-      setFileList([...fileList, file]);
-      return false; // Faylni avtomatik yuklashni to‘xtatadi
-    },
-    fileList,
+  const handleFileChange = (info) => {
+    const { fileList } = info;
+    setFileList(fileList);
+
+    // Faylni olish
+    if (fileList.length > 0) {
+      setFile(fileList[0].originFileObj);
+    }
   };
+  // Formani yuborish
+  const handleSubmit = async (values) => {
+    if (!file) {
+      message.error("Iltimos, faylni tanlang!");
+      return;
+    }
 
+    const formData = new FormData();
+    formData.append("name", values.name);
+    formData.append("phone", values.phone);
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbwBaMpaDQWBwdeNeCApotlDLKYpbuzrfC_Jf7w9R7VCMSRaZXxXnwfgf-63F6xZmff0/exec", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        message.success("Ma'lumot muvaffaqiyatli yuborildi!");
+      } else {
+        message.error("Xatolik yuz berdi!");
+      }
+    } catch (error) {
+      message.error("Xatolik yuz berdi: " + error.message);
+    }
+  };
   // Taymerni boshqarish
   useEffect(() => {
     if (time > 0) {
@@ -63,54 +83,6 @@ const Index = () => {
       });
   };
 
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      if (file && file.originFileObj) {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result.split(",")[1]); // Base64 qismini olish
-        reader.onerror = (error) => reject(error);
-      } else {
-        reject(new Error("Fayl noto‘g‘ri yoki mavjud emas."));
-      }
-    });
-  };
-
-  const handleSubmit = async (values) => {
-    try {
-      if (!fileList.length) {
-        message.error("Iltimos, rasmni yuklang!");
-        return;
-      }
-
-      const base64Image = await convertToBase64(fileList[0]);
-
-      const formData = {
-        FullName: values.FullName,
-        Phone: values.Phone,
-        Image: base64Image, // Base64 formatdagi rasm
-      };
-
-      const response = await fetch("https://script.google.com/macros/s/AKfycbw7uk6kv5rVZjW08ITfo-lpCplLg1RMJ_gAXaxPqOtOh9rxblYruXGz8zbIh_HlmdkE/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        message.success("Ma'lumotlar muvaffaqiyatli yuborildi!");
-        console.log("Rasm URL: ", data.fileUrl); // URL Google Drive'dan
-      } else {
-        message.error("Yuborishda muammo yuz berdi!");
-      }
-    } catch (err) {
-      console.error("Hatolik:", err);
-      message.error("Yuborishda muammo yuz berdi!");
-    }
-  };
-
   return (
     <div className="w-full min-h-[100vh] flex justify-center">
       <div className="max-w-[436px] my-5 w-full flex flex-col gap-4">
@@ -146,7 +118,7 @@ const Index = () => {
 
             <Form onFinish={handleSubmit} autoComplete="off" layout="vertical" className="pt-4">
               <Form.Item
-                name="FullName"
+                name="name"
                 rules={[
                   {
                     required: true,
@@ -166,7 +138,7 @@ const Index = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="Phone"
+                name="phone"
                 rules={[
                   {
                     required: true,
@@ -194,7 +166,7 @@ const Index = () => {
                   },
                 ]}
               >
-                <Upload {...props} maxCount={1}>
+                <Upload beforeUpload={() => false} fileList={fileList} onChange={handleFileChange} maxCount={1}>
                   <Button type="dashed" style={{ width: "100%" }}>
                     Upload File
                   </Button>
