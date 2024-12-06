@@ -15,10 +15,10 @@ const Index = () => {
 
   // Formani yuborish
   const handleSubmit = async (values) => {
-    if (fileList.length === 0) {
-      message.error("Iltimos, faylni tanlang!");
-      return;
-    }
+    // if (fileList.length === 0) {
+    //   message.error("Iltimos, faylni tanlang!");
+    //   return;
+    // }
 
     const formData = new FormData();
     formData.append("name", values.name);
