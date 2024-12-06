@@ -7,20 +7,15 @@ const Index = () => {
   const [time, setTime] = useState(15 * 60); // 15 daqiqalik taymer
   const navigate = useNavigate();
   const [fileList, setFileList] = useState([]);
-  const [file, setFile] = useState(null);
 
-  const handleFileChange = (info) => {
-    const { fileList } = info;
-    setFileList(fileList);
-
-    // Faylni olish
-    if (fileList.length > 0) {
-      setFile(fileList[0].originFileObj);
-    }
+  // Faylni o'zgartirishda boshqarish
+  const handleFileChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
   };
+
   // Formani yuborish
   const handleSubmit = async (values) => {
-    if (!file) {
+    if (fileList.length === 0) {
       message.error("Iltimos, faylni tanlang!");
       return;
     }
@@ -28,16 +23,17 @@ const Index = () => {
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("phone", values.phone);
-    formData.append("file", file);
+    formData.append("file", fileList[0].originFileObj);
 
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbwqY9dYP8lHWI4iJzuc_8TJFKsqLzMhA1lHZpnthynUZOo-mJyIP9NSlii9wEGQpd97/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbz_j68NMAec9VSeP-Spu8DJfDXJSADKeoAf-nqkRS_QYXS5EYvCX7s6itB5japmYtKf/exec", {
         method: "POST",
         body: formData,
       });
 
       if (response.ok) {
         message.success("Ma'lumot muvaffaqiyatli yuborildi!");
+        setFileList([]); // Fayl ro'yxatini tozalash
       } else {
         message.error("Xatolik yuz berdi!");
       }
@@ -45,6 +41,7 @@ const Index = () => {
       message.error("Xatolik yuz berdi: " + error.message);
     }
   };
+
   // Taymerni boshqarish
   useEffect(() => {
     if (time > 0) {
@@ -73,13 +70,7 @@ const Index = () => {
         alert("Karta raqami nusxalandi: 5614 6819 1836 7438");
       })
       .catch(() => {
-        const textarea = document.createElement("textarea");
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand("copy");
-        document.body.removeChild(textarea);
-        alert("Karta raqami nusxalandi: 5614 6819 1836 7438");
+        alert("Karta raqamini nusxalashda xatolik yuz berdi!");
       });
   };
 
@@ -142,7 +133,7 @@ const Index = () => {
                 rules={[
                   {
                     required: true,
-                    message: "Siz telifon raqamingizni kiritmadingiz!",
+                    message: "Siz telefon raqamingizni kiritmadingiz!",
                   },
                 ]}
               >
@@ -158,31 +149,26 @@ const Index = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="Image"
+                name="image"
                 rules={[
                   {
                     required: true,
-                    message: "Siz cheak rasmini kiritmadingiz!",
+                    message: "Siz chek rasmini kiritmadingiz!",
                   },
                 ]}
               >
                 <Upload
-                  beforeUpload={(file) => {
-                    const isImage = file.type === "image/png" || file.type === "image/jpeg";
-                    if (!isImage) {
-                      message.error("Faqat JPEG yoki PNG rasm yuklash mumkin!");
-                    }
-                    return isImage || Upload.LIST_IGNORE;
-                  }}
                   fileList={fileList}
                   onChange={handleFileChange}
                   maxCount={1}
+                  beforeUpload={() => false} // Fayl yuklashni avtomatik ravishda bloklash
                 >
                   <Button type="dashed" style={{ width: "100%" }}>
-                    Upload File
+                    Fayl yuklash
                   </Button>
                 </Upload>
               </Form.Item>
+
               <Button htmlType="submit" className="w-full h-[50px]" type="primary" size="large">
                 Davom etish
               </Button>
