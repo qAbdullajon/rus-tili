@@ -1,39 +1,34 @@
-import { CopyOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Upload, message } from "antd";
+import { CopyOutlined } from "@ant-design/icons";
+import { Button, Form, Input, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [time, setTime] = useState(15 * 60); // 15 daqiqalik taymer
   const navigate = useNavigate();
-  const [fileList, setFileList] = useState([]);
+  // const [fileList, setFileList] = useState([]);
 
-  // Faylni o'zgartirishda boshqarish
-  const handleFileChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-  };
+  // // Faylni o'zgartirishda boshqarish
+  // const handleFileChange = ({ fileList: newFileList }) => {
+  //   setFileList(newFileList);
+  // };
 
   // Formani yuborish
   const handleSubmit = async (values) => {
-    // if (fileList.length === 0) {
-    //   message.error("Iltimos, faylni tanlang!");
-    //   return;
-    // }
-
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("phone", values.phone);
-    // formData.append("file", fileList[0].originFileObj);
+    // formData.append("file", fileList[0]?.originFileObj);
 
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxFNmVi1QhO96rzw3yTAXcWtaXFpCoF5xv5a6VXWhNkwg7uldIsmW8MoSBwNZ7unctJ/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycby0WOEetck_dMoh1Go16Mu51iSQ4I7Menovwuhq5hXKiPIU_b-WwP_mLNH0QJWLJz-o/exec", {
         method: "POST",
         body: formData,
       });
 
       if (response.ok) {
         message.success("Ma'lumot muvaffaqiyatli yuborildi!");
-        setFileList([]); // Fayl ro'yxatini tozalash
+        // setFileList([]); // Fayl ro'yxatini tozalash
       } else {
         message.error("Xatolik yuz berdi!");
       }
@@ -51,27 +46,15 @@ const Index = () => {
       return () => clearInterval(timerId);
     } else {
       message.warning("Vaqt tugadi! Iltimos, qayta urinib ko‘ring.");
+      navigate("/timeout"); // Zarurat bo'lsa, kerakli sahifaga yo'naltirish
     }
-  }, [time]);
+  }, [time, navigate]);
 
   // Taymerni formatlash
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
-  };
-
-  // Karta raqamini nusxalash
-  const copyText = () => {
-    const text = "5614 6819 1836 7438";
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        alert("Karta raqami nusxalandi: 5614 6819 1836 7438");
-      })
-      .catch(() => {
-        alert("Karta raqamini nusxalashda xatolik yuz berdi!");
-      });
   };
 
   return (
@@ -102,12 +85,12 @@ const Index = () => {
               <div className="h-[1px] bg-[#c6c6c6]"></div>
               <div className="flex justify-between items-center">
                 <p className="text-2xl textToCopy">5614 6819 1836 7438</p>
-                <Button className="bg-transparent" icon={<CopyOutlined />} onClick={copyText} />
+                <Button className="bg-transparent" icon={<CopyOutlined />} onClick={() => message.success("Karta raqami nusxalandi!")} />
               </div>
               <p className="text-[18px]">Alijonova Dilshodaxon</p>
             </div>
 
-            <Form action="https://script.google.com/macros/s/AKfycbxFNmVi1QhO96rzw3yTAXcWtaXFpCoF5xv5a6VXWhNkwg7uldIsmW8MoSBwNZ7unctJ/exec" autoComplete="off" layout="vertical" className="pt-4">
+            <Form autoComplete="off" layout="vertical" className="pt-4" onFinish={handleSubmit}>
               <Form.Item
                 name="name"
                 rules={[
@@ -148,6 +131,7 @@ const Index = () => {
                   }}
                 />
               </Form.Item>
+
               {/* <Form.Item
                 name="image"
                 rules={[
