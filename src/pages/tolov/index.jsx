@@ -14,27 +14,21 @@ const Index = () => {
   };
 
   // Formani yuborish
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log();
     const formData = new FormData();
-    formData.append("Name", values.name);
-    formData.append("Phone", values.phone);
-    formData.append("Image", fileList[0]?.originFileObj);
+    formData.append("Name", event.name);
+    formData.append("Phone", event.phone);
+    formData.append("image", fileList[0]); // Foydalanuvchi yuklagan tasvir
 
-    try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbws0aQdBr0Oi1EJ_hj_LzoEr7yCrEszZXyfT089OiEMXrdEdXZQAPgdqAjtWpPOn3u3/exec", {
-        method: "POST",
-        body: formData,
-      });
+    const response = await fetch("https://script.google.com/macros/s/AKfycby1fDZvYVg6x8RBVdfhrBW-uyY0Ofq_tKmmqFi5RZ813GtAjdiYYuQ0inkq2LKzI9sg/exec", {
+      method: "POST",
+      body: formData,
+    });
 
-      if (response.ok) {
-        message.success("Ma'lumot muvaffaqiyatli yuborildi!");
-        setFileList([]); // Fayl ro'yxatini tozalash
-      } else {
-        message.error("Xatolik yuz berdi!");
-      }
-    } catch (error) {
-      message.error("Xatolik yuz berdi: " + error.message);
-    }
+    const result = await response.json();
+    console.log(result);
   };
 
   // Taymerni boshqarish
