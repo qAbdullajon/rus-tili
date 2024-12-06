@@ -1,15 +1,12 @@
 import { CopyOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Upload, message } from "antd";
-import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [time, setTime] = useState(15 * 60); // 15 daqiqalik taymer
-  const formRef = useRef(null);
   const navigate = useNavigate();
   const [fileList, setFileList] = useState([]);
-  const [uploading, setUploading] = useState(false);
 
   // Fayl yuklash parametrlari
   const props = {
@@ -66,29 +63,43 @@ const Index = () => {
       });
   };
 
-  // Formani yuborish
-  const handleSubmit = (values) => {
-    const formData = new FormData();
-    formData.append("FullName", values.FullName);
-    formData.append("Phone", values.Phone);
-    formData.append("Image", fileList[0]?.originFileObj);
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // Base64 qismini olish
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
-    fetch("https://script.google.com/macros/s/AKfycbznE5Uwj4R-A7RuYEv1YUSZutRN2jwdXTbnLF8VslsbsgMtJ8pTWR71Ntk_wEH9hNo7/exec", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          navigate("/tg-taklif");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Yuborildi:", data);
-      })
-      .catch((err) => {
-        console.error("Hatolik:", err);
+  const handleSubmit = async (values) => {
+    try {
+      const base64Image = await convertToBase64(fileList[0]?.originFileObj);
+
+      const formData = {
+        FullName: values.FullName,
+        Phone: values.Phone,
+        Image: base64Image, // Base64 formatdagi rasm
+      };
+
+      const response = await fetch("YOUR_SCRIPT_URL", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        message.success("Ma'lumotlar muvaffaqiyatli yuborildi!");
+        console.log("Rasm URL: ", data.fileUrl); // URL Google Drive'dan
+      } else {
+        message.error("Yuborishda muammo yuz berdi!");
+      }
+    } catch (err) {
+      console.error("Hatolik:", err);
+      message.error("Yuborishda muammo yuz berdi!");
+    }
   };
 
   return (
