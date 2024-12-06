@@ -18,10 +18,10 @@ const Index = () => {
     const formData = new FormData();
     formData.append("Name", values.name);
     formData.append("Phone", values.phone);
-    formData.append("file", fileList[0]?.originFileObj);
+    formData.append("Image", fileList[0]?.originFileObj);
 
     try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbxuQiIomDzW0R_dyQKjhyXnAHg3XuMdiu6KLqotWfvke3eEm9mfZZQ8NbstMIlw7_2I/exec", {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbws0aQdBr0Oi1EJ_hj_LzoEr7yCrEszZXyfT089OiEMXrdEdXZQAPgdqAjtWpPOn3u3/exec", {
         method: "POST",
         body: formData,
       });
